@@ -1,28 +1,54 @@
 import { useState, useEffect, useRef } from "react";
 import Icon from "@/components/ui/icon";
 
-// ─────────────────────────────────────────────
-// CONSTANTS
-// ─────────────────────────────────────────────
-const LOGO_URL =
-  "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/bucket/66dfe931-3178-44b4-9e57-7cdecea02f79.png";
+// ──────────────────────────────────────────────────
+// ASSETS & CONSTANTS
+// ──────────────────────────────────────────────────
+const LOGO_URL = "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/bucket/66dfe931-3178-44b4-9e57-7cdecea02f79.png";
+const HERO_IMG = "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/dbaaf8e0-0994-44f6-be0e-b1c45ace8466.jpg";
 
-const HERO_IMG =
-  "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/4fe33c00-7262-4cf3-bce5-34d8de728549.jpg";
+const IMG = {
+  p1: "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/179109c5-b630-405b-9c8f-8ab7e0d6804a.jpg",
+  p2: "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/07c48682-4459-4388-bf2b-6581dde99b9b.jpg",
+  p3: "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/b5f5c1c9-6de2-48b1-85b4-318a7f4c0dd2.jpg",
+  p4: "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/61a3efa8-70d2-4be6-a7bd-9897a1f75a1c.jpg",
+  p5: "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/4fe33c00-7262-4cf3-bce5-34d8de728549.jpg",
+  p6: "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/e520038f-7c8d-440c-adc7-5e9381507fe4.jpg",
+};
 
-const IMG_BANYA =
-  "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/179109c5-b630-405b-9c8f-8ab7e0d6804a.jpg";
-const IMG_BYTOVKA =
-  "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/b098a667-9873-4f82-951f-714ce5d9d513.jpg";
-const IMG_DACHA =
-  "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/61a3efa8-70d2-4be6-a7bd-9897a1f75a1c.jpg";
-const IMG_HOZBLOK =
-  "https://cdn.poehali.dev/projects/ae84adcf-3042-47db-a625-8e600228c8fb/files/e520038f-7c8d-440c-adc7-5e9381507fe4.jpg";
+const NAV_LINKS = ["Главная", "О нас", "Каталог", "Отзывы", "Контакты"];
 
-// ─────────────────────────────────────────────
+const ABOUT_STATS = [
+  { num: "8 лет", label: "создаём строения", sub: "с 2016 года" },
+  { num: "500+", label: "проданных\nобъектов" },
+  { num: "40+", label: "проверенных\nпроизводителей" },
+  { num: "16", label: "городов и\nрайонов РТ" },
+];
+
+const WHY_ITEMS = [
+  { n: "01", title: "Доставка 3–7 дней", body: "Собственный парк спецтехники по всему Татарстану без посредников" },
+  { n: "02", title: "Гарантия 12 месяцев", body: "ОТК перед отгрузкой, устраним дефект за наш счёт" },
+  { n: "03", title: "Цена без накруток", body: "Прямые договоры с производителями — финальная цена на сайте" },
+  { n: "04", title: "Рассрочка без %", body: "6 месяцев без переплат, физлица, ИП и юрлица" },
+];
+
+const PRODUCTS = [
+  { id: 1, title: "Бытовка «Стандарт»", cat: "bytovka", size: "6×2.4 м", area: 14.4, ins: "100mm", ins_label: "100 мм", price: 85000, badge: "Хит", img: IMG.p2, tags: ["14 м²", "100 мм"], inStock: true },
+  { id: 2, title: "Баня «Рубленая»", cat: "banya", size: "4×5 м", area: 20, ins: "150mm", ins_label: "150 мм", price: 320000, badge: "Новинка", img: IMG.p1, tags: ["20 м²", "150 мм"], inStock: true },
+  { id: 3, title: "Дачный домик «Уют»", cat: "dacha", size: "5×4 м", area: 20, ins: "150mm", ins_label: "150 мм", price: 195000, badge: "Акция", img: IMG.p4, tags: ["20 м²", "150 мм"], inStock: true },
+  { id: 4, title: "Хозблок «Мастер»", cat: "hozblok", size: "3×2 м", area: 6, ins: "none", ins_label: "Без утепл.", price: 65000, badge: null, img: IMG.p3, tags: ["6 м²", "Без утепл."], inStock: true },
+  { id: 5, title: "Бытовка «Комфорт»", cat: "bytovka", size: "9×2.4 м", area: 21.6, ins: "150mm", ins_label: "150 мм", price: 130000, badge: "Хит", img: IMG.p2, tags: ["22 м²", "150 мм"], inStock: true },
+  { id: 6, title: "Баня «Финская»", cat: "banya", size: "5×6 м", area: 30, ins: "200mm", ins_label: "200 мм", price: 440000, badge: "Премиум", img: IMG.p1, tags: ["30 м²", "200 мм"], inStock: false },
+  { id: 7, title: "Хозблок с навесом", cat: "hozblok", size: "4×3 м", area: 12, ins: "100mm", ins_label: "100 мм", price: 95000, badge: null, img: IMG.p3, tags: ["12 м²", "100 мм"], inStock: true },
+  { id: 8, title: "Дачный домик «Садко»", cat: "dacha", size: "6×5 м", area: 30, ins: "200mm", ins_label: "200 мм", price: 285000, badge: "Новинка", img: IMG.p6, tags: ["30 м²", "200 мм"], inStock: true },
+];
+
+const CATS_MAP: Record<string, string> = { all: "Все", bytovka: "Бытовки", dacha: "Домики", hozblok: "Хозблоки", banya: "Бани" };
+
+// ──────────────────────────────────────────────────
 // SCROLL REVEAL HOOK
-// ─────────────────────────────────────────────
-function useReveal(threshold = 0.12) {
+// ──────────────────────────────────────────────────
+function useReveal(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   useEffect(() => {
@@ -38,510 +64,480 @@ function useReveal(threshold = 0.12) {
   return { ref, on };
 }
 
-// ─────────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────────
-const STATS = [
-  { num: "500+", label: "объектов продано", sub: "за 8 лет работы" },
-  { num: "98%", label: "клиентов довольны", sub: "рекомендуют друзьям" },
-  { num: "3–7", label: "дней доставка", sub: "по всему Татарстану" },
-  { num: "12 мес", label: "гарантия", sub: "на каждое строение" },
-];
-
-const WHY = [
-  { n: "01", title: "Доставка за 3–7 дней", body: "Собственный парк спецтехники. Привезём и установим в любую точку Татарстана без посредников." },
-  { n: "02", title: "Гарантия 12 месяцев", body: "Каждое строение проходит ОТК перед отгрузкой. Устраним любой дефект за наш счёт." },
-  { n: "03", title: "Цена без накруток", body: "Работаем напрямую с производителями. Цена на сайте — финальная. Никаких «уточним при звонке»." },
-  { n: "04", title: "Проверенные продавцы", body: "Все поставщики верифицированы и имеют сертификаты. Только реальные производители." },
-  { n: "05", title: "Поддержка 7 дней", body: "Менеджеры с 8:00 до 22:00. Помогаем с выбором размера, комплектации и условий оплаты." },
-  { n: "06", title: "Рассрочка без %", body: "Оплата частями на 6 месяцев без переплат. Работаем с физлицами, ИП и юрлицами." },
-];
-
-const CATEGORIES = [
-  { id: "all", label: "Все" },
-  { id: "bytovka", label: "Бытовки" },
-  { id: "dacha", label: "Дачные домики" },
-  { id: "hozblok", label: "Хозблоки" },
-  { id: "banya", label: "Бани" },
-];
-
-const SIZE_F = [
-  { id: "all", label: "Любой" },
-  { id: "small", label: "до 12 м²" },
-  { id: "medium", label: "12–25 м²" },
-  { id: "large", label: "25+ м²" },
-];
-
-const INS_F = [
-  { id: "all", label: "Любое" },
-  { id: "none", label: "Без утепл." },
-  { id: "100mm", label: "100 мм" },
-  { id: "150mm", label: "150 мм" },
-  { id: "200mm", label: "200 мм" },
-];
-
-const PRODUCTS = [
-  { id: 1, title: "Бытовка «Стандарт»", cat: "bytovka", price: 85000, size: "6×2.4 м", area: 14.4, ins: "100mm", insL: "100 мм", badge: "Хит", img: IMG_BYTOVKA, inStock: true },
-  { id: 2, title: "Баня «Рубленая»", cat: "banya", price: 320000, size: "4×5 м", area: 20, ins: "150mm", insL: "150 мм", badge: "Новинка", img: IMG_BANYA, inStock: true },
-  { id: 3, title: "Дачный домик «Уют»", cat: "dacha", price: 195000, size: "5×4 м", area: 20, ins: "150mm", insL: "150 мм", badge: "Акция", img: IMG_DACHA, inStock: true },
-  { id: 4, title: "Хозблок «Мастер»", cat: "hozblok", price: 65000, size: "3×2 м", area: 6, ins: "none", insL: "Без утепл.", badge: null, img: IMG_HOZBLOK, inStock: true },
-  { id: 5, title: "Бытовка «Комфорт»", cat: "bytovka", price: 130000, size: "9×2.4 м", area: 21.6, ins: "150mm", insL: "150 мм", badge: "Хит", img: IMG_BYTOVKA, inStock: true },
-  { id: 6, title: "Баня «Финская»", cat: "banya", price: 440000, size: "5×6 м", area: 30, ins: "200mm", insL: "200 мм", badge: "Премиум", img: IMG_BANYA, inStock: false },
-  { id: 7, title: "Хозблок с навесом", cat: "hozblok", price: 95000, size: "4×3 м", area: 12, ins: "100mm", insL: "100 мм", badge: null, img: IMG_HOZBLOK, inStock: true },
-  { id: 8, title: "Дачный домик «Садко»", cat: "dacha", price: 285000, size: "6×5 м", area: 30, ins: "200mm", insL: "200 мм", badge: "Новинка", img: IMG_DACHA, inStock: true },
-];
-
-// ─────────────────────────────────────────────
-// NAVBAR
-// ─────────────────────────────────────────────
-function Navbar({ page, setPage }: { page: string; setPage: (p: string) => void }) {
+// ──────────────────────────────────────────────────
+// NAVBAR  — лого слева, ссылки по центру, город справа
+// ──────────────────────────────────────────────────
+function Navbar({ activePage, setPage }: { activePage: string; setPage: (p: string) => void }) {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [mOpen, setMOpen] = useState(false);
 
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 40);
+    const h = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", h);
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  const navLinks = [
-    { id: "home", label: "Главная" },
-    { id: "catalog", label: "Каталог" },
-    { id: "about", label: "О нас" },
-  ];
-
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white border-b border-gray-100 shadow-sm" : "bg-white/90 backdrop-blur"
-      }`}
-    >
-      <div className="max-w-[1160px] mx-auto px-5 flex items-center justify-between h-14">
-        <button onClick={() => setPage("home")} className="flex-shrink-0">
-          <img src={LOGO_URL} alt="НА УЧАСТКЕ" className="h-8 w-auto" />
+    <header className={`fixed inset-x-0 top-0 z-50 transition-shadow duration-200 bg-white ${scrolled ? "shadow-sm" : ""}`}>
+      <div className="max-w-[1160px] mx-auto px-5 flex items-center h-[52px]">
+        {/* Logo */}
+        <button onClick={() => setPage("home")} className="flex-shrink-0 mr-8">
+          <img src={LOGO_URL} alt="НА УЧАСТКЕ" className="h-7 w-auto" />
         </button>
 
-        <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((l) => (
-            <button
-              key={l.id}
-              onClick={() => setPage(l.id)}
-              className={`text-sm font-semibold transition-colors ${
-                page === l.id ? "text-[#CC1F1F]" : "text-[#2D2D2D] hover:text-[#CC1F1F]"
-              }`}
-            >
-              {l.label}
-            </button>
-          ))}
+        {/* Center nav */}
+        <nav className="hidden md:flex items-center gap-6 flex-1 justify-center">
+          {NAV_LINKS.map((l) => {
+            const id = l === "Главная" ? "home" : l === "Каталог" ? "catalog" : l === "О нас" ? "about" : "home";
+            return (
+              <button
+                key={l}
+                onClick={() => setPage(id)}
+                className={`text-sm transition-colors border-b-2 pb-0.5 ${
+                  (activePage === id)
+                    ? "text-[#1a1a1a] border-[#1a1a1a] font-semibold"
+                    : "text-[#555] border-transparent hover:text-[#1a1a1a] font-medium"
+                }`}
+              >
+                {l}
+              </button>
+            );
+          })}
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
-          <a href="tel:+78432000000" className="text-sm font-bold text-[#2D2D2D] hover:text-[#CC1F1F] transition-colors flex items-center gap-1.5">
-            <Icon name="Phone" size={14} />
+        {/* Right — city + phone */}
+        <div className="hidden md:flex items-center gap-5 ml-8">
+          <span className="text-sm text-[#555]">Республика Татарстан</span>
+          <a href="tel:+78432000000" className="text-sm font-semibold text-[#1a1a1a] hover:text-brand-orange transition-colors">
             +7 (843) 200-00-00
           </a>
-          <button
-            onClick={() => setPage("catalog")}
-            className="bg-[#CC1F1F] text-white text-sm font-bold px-5 py-2 hover:bg-[#a81919] transition-colors"
-          >
-            Оставить заявку
-          </button>
         </div>
 
-        <button className="md:hidden" onClick={() => setOpen(!open)}>
-          <Icon name={open ? "X" : "Menu"} size={22} className="text-[#2D2D2D]" />
+        <button className="ml-auto md:hidden" onClick={() => setMOpen(!mOpen)}>
+          <Icon name={mOpen ? "X" : "Menu"} size={20} className="text-[#1a1a1a]" />
         </button>
       </div>
 
-      {open && (
+      {mOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white px-5 py-4 flex flex-col gap-3">
-          {navLinks.map((l) => (
-            <button
-              key={l.id}
-              onClick={() => { setPage(l.id); setOpen(false); }}
-              className={`text-left text-sm font-semibold py-1 ${page === l.id ? "text-[#CC1F1F]" : "text-[#2D2D2D]"}`}
-            >
-              {l.label}
-            </button>
-          ))}
-          <a href="tel:+78432000000" className="text-sm font-bold text-[#CC1F1F]">+7 (843) 200-00-00</a>
+          {NAV_LINKS.map((l) => {
+            const id = l === "Главная" ? "home" : l === "Каталог" ? "catalog" : l === "О нас" ? "about" : "home";
+            return (
+              <button key={l} onClick={() => { setPage(id); setMOpen(false); }}
+                className={`text-left text-sm font-medium py-1 ${activePage === id ? "text-[#1a1a1a] font-semibold" : "text-[#555]"}`}
+              >{l}</button>
+            );
+          })}
+          <a href="tel:+78432000000" className="text-sm font-bold text-brand-orange">+7 (843) 200-00-00</a>
         </div>
       )}
     </header>
   );
 }
 
-// ─────────────────────────────────────────────
-// HERO
-// ─────────────────────────────────────────────
-function Hero({ onCatalog, onLead }: { onCatalog: () => void; onLead: () => void }) {
+// ──────────────────────────────────────────────────
+// HERO  — текст НАД фото, подпись + кнопка ВНУТРИ фото
+// ──────────────────────────────────────────────────
+function Hero({ onLead }: { onLead: () => void }) {
   return (
-    <section className="relative min-h-[92vh] flex items-end overflow-hidden bg-[#1a1a1a]">
-      {/* full-bleed image */}
-      <div className="absolute inset-0">
-        <img src={HERO_IMG} alt="hero" className="w-full h-full object-cover opacity-75" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a1a]/90 via-[#1a1a1a]/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a]/80 via-transparent to-transparent" />
+    <section className="pt-[52px]">
+      {/* Big headline ABOVE the photo */}
+      <div className="max-w-[1160px] mx-auto px-5 pt-10 pb-3">
+        <h1 className="text-[clamp(44px,8vw,96px)] font-black leading-[0.93] tracking-tight text-[#1a1a1a] uppercase">
+          СТРОЕНИЯ<br />НА&nbsp;УЧАСТКЕ
+        </h1>
       </div>
 
-      <div className="relative z-10 max-w-[1160px] mx-auto px-5 pb-20 pt-32 w-full">
-        <div className="max-w-[580px]">
-          {/* eyebrow */}
-          <div className="flex items-center gap-3 mb-6">
-            <span className="block w-8 h-[2px] bg-[#CC1F1F]" />
-            <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Маркетплейс строений · Татарстан</span>
-          </div>
+      {/* Full-width photo block */}
+      <div className="relative overflow-hidden" style={{ height: "clamp(320px, 48vw, 560px)" }}>
+        <img
+          src={HERO_IMG}
+          alt="Строения на участке"
+          className="w-full h-full object-cover object-center anim-in"
+        />
+        {/* Dark gradient for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-black/50" />
 
-          <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.0] mb-6 tracking-tight">
-            СТРОЕНИЯ<br />
-            <span className="text-[#CC1F1F]">НА УЧАСТКЕ</span><br />
-            <span className="text-white/90">ПОД КЛЮЧ</span>
-          </h1>
-
-          <p className="text-white/65 text-base md:text-lg leading-relaxed mb-10 max-w-md">
-            Бытовки, дачные домики, хозблоки и бани от проверенных производителей.
-            Доставка и монтаж за 3–7 дней по всему Татарстану.
+        {/* Bottom-center: subtitle + CTA */}
+        <div className="absolute bottom-0 inset-x-0 flex flex-col items-center pb-10 gap-4">
+          <p className="text-white/85 text-sm md:text-base text-center max-w-sm leading-relaxed px-4">
+            Прозрачные сметы, чёткие сроки, честные отношения —<br className="hidden md:block" />
+            наш рецепт успешного строительства
           </p>
-
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={onCatalog}
-              className="bg-[#CC1F1F] hover:bg-[#a81919] text-white font-bold text-sm px-8 py-3.5 transition-colors flex items-center gap-2"
-            >
-              Смотреть каталог
-              <Icon name="ArrowRight" size={16} />
-            </button>
-            <button
-              onClick={onLead}
-              className="border border-white/40 hover:border-white text-white font-bold text-sm px-8 py-3.5 transition-colors"
-            >
-              Получить консультацию
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* bottom bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 border-t border-white/10">
-        <div className="max-w-[1160px] mx-auto px-5 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
-          {STATS.map((s) => (
-            <div key={s.num} className="py-5 px-6 first:pl-0">
-              <div className="text-2xl font-black text-white leading-none mb-1">{s.num}</div>
-              <div className="text-white/70 text-xs font-semibold">{s.label}</div>
-            </div>
-          ))}
+          <button
+            onClick={onLead}
+            className="bg-white/95 hover:bg-white text-[#1a1a1a] font-semibold text-sm px-8 py-3 rounded-full transition-all shadow-lg hover:shadow-xl"
+          >
+            Оставить заявку
+          </button>
         </div>
       </div>
     </section>
   );
 }
 
-// ─────────────────────────────────────────────
-// WHY US
-// ─────────────────────────────────────────────
-function WhySection() {
+// ──────────────────────────────────────────────────
+// ABOUT SECTION  — точно как на референсе
+// ──────────────────────────────────────────────────
+function AboutSection() {
   const { ref, on } = useReveal();
   return (
-    <section className="py-24 bg-white" ref={ref}>
+    <section className="py-20 bg-white" ref={ref}>
       <div className="max-w-[1160px] mx-auto px-5">
-        {/* header */}
-        <div className={`flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 ${on ? "animate-fade-in-up" : "opacity-0"}`}>
+
+        {/* Eyebrow */}
+        <p className={`text-sm text-[#999] mb-6 ${on ? "anim-up" : "hidden-init"}`}>(1) О компании</p>
+
+        {/* Two-column header */}
+        <div className={`grid md:grid-cols-2 gap-8 mb-14 ${on ? "anim-up d1" : "hidden-init"}`}>
           <div>
-            <p className="text-[#CC1F1F] text-xs font-bold uppercase tracking-widest mb-3">Почему выбирают нас</p>
-            <h2 className="text-4xl md:text-5xl font-black text-[#2D2D2D] leading-tight">
-              8 лет строим доверие<br className="hidden md:block" /> в Татарстане
+            <h2 className="text-[clamp(28px,4vw,42px)] font-bold text-[#1a1a1a] leading-tight">
+              Почему выбирают<br />именно нас?
             </h2>
           </div>
-          <p className="text-[#737373] text-sm max-w-xs md:text-right leading-relaxed">
-            Без скрытых условий, без посредников — только честная работа напрямую с производителями
-          </p>
+          <div className="flex flex-col gap-4 justify-center">
+            <p className="text-[#555] text-sm leading-relaxed">
+              Только лучшие материалы и проверенные технологии,
+              потому что мы стремимся создавать качественные
+              и надёжные объекты, которые прослужат долгие годы
+            </p>
+            <p className="text-[#555] text-sm leading-relaxed">
+              Честность, открытость и ответственность во всём,
+              что мы делаем
+            </p>
+          </div>
         </div>
 
-        {/* grid 2×3 */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-100">
-          {WHY.map((w, i) => (
+        {/* Stats grid — 4 cells with light borders */}
+        <div className={`grid grid-cols-2 md:grid-cols-4 border border-[#e8e8e8] mb-16 ${on ? "anim-up d2" : "hidden-init"}`}>
+          {ABOUT_STATS.map((s, i) => (
             <div
-              key={w.n}
-              className={`bg-white p-8 hover:bg-[#fafafa] transition-colors group ${on ? "animate-fade-in-up" : "opacity-0"}`}
-              style={{ animationDelay: `${i * 0.07}s` }}
+              key={i}
+              className={`p-6 md:p-8 ${i < 3 ? "border-r border-[#e8e8e8]" : ""}`}
             >
-              <span className="block text-5xl font-black text-gray-100 group-hover:text-[#CC1F1F]/15 transition-colors leading-none mb-5 select-none">
-                {w.n}
-              </span>
-              <h3 className="text-base font-bold text-[#2D2D2D] mb-2">{w.title}</h3>
-              <p className="text-sm text-[#737373] leading-relaxed">{w.body}</p>
+              <div className="text-[clamp(26px,4vw,40px)] font-bold text-[#1a1a1a] leading-none mb-2">
+                {s.num}
+              </div>
+              <div className="text-xs text-[#888] leading-relaxed whitespace-pre-line">{s.label}</div>
+              {s.sub && <div className="text-xs text-[#bbb] mt-1">{s.sub}</div>}
             </div>
           ))}
         </div>
+
+        {/* Giant decorative numbers row — as in ref */}
+        <div className={`grid grid-cols-4 overflow-hidden ${on ? "anim-up d3" : "hidden-init"}`}>
+          {WHY_ITEMS.map((w) => (
+            <div key={w.n} className="relative group overflow-hidden">
+              {/* Big number */}
+              <div
+                className="text-[clamp(80px,10vw,140px)] font-black leading-none select-none transition-colors duration-300"
+                style={{ color: "hsl(var(--brand-orange))", opacity: 0.18 }}
+              >
+                {w.n}
+              </div>
+              {/* Content on hover */}
+              <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white/90">
+                <p className="text-xs font-bold text-[#1a1a1a] mb-1">{w.title}</p>
+                <p className="text-[11px] text-[#888] leading-relaxed">{w.body}</p>
+              </div>
+              {/* Always-visible title */}
+              <p className="text-xs font-semibold text-[#555] mt-1 px-1">{w.title}</p>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );
 }
 
-// ─────────────────────────────────────────────
-// CATALOG SECTION
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
+// CATALOG SECTION  — фильтры слева, карточки 2×N справа
+// ──────────────────────────────────────────────────
 function CatalogSection({ standalone = false }: { standalone?: boolean }) {
-  const { ref, on } = useReveal();
-  const [cat, setCat] = useState("all");
-  const [sizeF, setSizeF] = useState("all");
-  const [insF, setInsF] = useState("all");
-  const [maxP, setMaxP] = useState(500000);
-  const [sort, setSort] = useState("default");
+  const { ref, on } = useReveal(0.05);
+
+  // Filter state
+  const [cat, setCat] = useState<string[]>([]);         // multi-cat
+  const [sizeMin, setSizeMin] = useState("");
+  const [sizeMax, setSizeMax] = useState("");
+  const [insul, setInsul] = useState<string[]>([]);
+  const [priceMin, setPriceMin] = useState("");
+  const [priceMax, setPriceMax] = useState("");
+  const [visCount, setVisCount] = useState(4);
+
+  const INS_OPTIONS = [
+    { id: "none", label: "Без утепления" },
+    { id: "100mm", label: "100 мм" },
+    { id: "150mm", label: "150 мм" },
+    { id: "200mm", label: "200 мм" },
+  ];
+
+  const CAT_OPTIONS = [
+    { id: "bytovka", label: "Бытовки" },
+    { id: "dacha", label: "Дачные домики" },
+    { id: "hozblok", label: "Хозблоки" },
+    { id: "banya", label: "Бани" },
+  ];
+
+  const toggleArr = (arr: string[], val: string, set: (a: string[]) => void) => {
+    set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
+  };
+
+  const reset = () => {
+    setCat([]); setInsul([]);
+    setSizeMin(""); setSizeMax("");
+    setPriceMin(""); setPriceMax("");
+    setVisCount(4);
+  };
 
   const filtered = PRODUCTS.filter((p) => {
-    const mc = cat === "all" || p.cat === cat;
-    const mi = insF === "all" || p.ins === insF;
-    const mp = p.price <= maxP;
-    let ms = true;
-    if (sizeF === "small")  ms = p.area < 12;
-    if (sizeF === "medium") ms = p.area >= 12 && p.area <= 25;
-    if (sizeF === "large")  ms = p.area > 25;
-    return mc && mi && mp && ms;
-  }).sort((a, b) => sort === "asc" ? a.price - b.price : sort === "desc" ? b.price - a.price : 0);
+    if (cat.length && !cat.includes(p.cat)) return false;
+    if (insul.length && !insul.includes(p.ins)) return false;
+    if (sizeMin && p.area < parseFloat(sizeMin)) return false;
+    if (sizeMax && p.area > parseFloat(sizeMax)) return false;
+    if (priceMin && p.price < parseInt(priceMin)) return false;
+    if (priceMax && p.price > parseInt(priceMax)) return false;
+    return true;
+  });
 
-  const FilterBtn = ({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) => (
-    <button
-      onClick={onClick}
-      className={`px-3.5 py-1.5 text-xs font-bold border transition-all ${
-        active
-          ? "bg-[#CC1F1F] border-[#CC1F1F] text-white"
-          : "border-gray-200 text-[#2D2D2D] hover:border-[#CC1F1F] hover:text-[#CC1F1F] bg-white"
-      }`}
-    >
-      {label}
-    </button>
-  );
+  const visible = filtered.slice(0, visCount);
+  const hasMore = filtered.length > visCount;
 
   return (
-    <section className={`py-20 ${standalone ? "bg-white" : "bg-[#F5F5F5]"}`} ref={ref}>
+    <section className={`py-20 ${standalone ? "bg-white" : "bg-[#f9f9f9]"}`} ref={ref}>
       <div className="max-w-[1160px] mx-auto px-5">
-        {/* header */}
-        <div className={`flex flex-wrap items-end justify-between gap-5 mb-10 ${on ? "animate-fade-in-up" : "opacity-0"}`}>
-          <div>
-            <p className="text-[#CC1F1F] text-xs font-bold uppercase tracking-widest mb-2">Каталог</p>
-            <h2 className="text-4xl font-black text-[#2D2D2D]">Строения</h2>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-[#737373] text-sm">{filtered.length} объектов</span>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="border border-gray-200 text-xs font-bold text-[#2D2D2D] px-3 py-2 bg-white focus:outline-none focus:border-[#CC1F1F]"
-            >
-              <option value="default">По умолчанию</option>
-              <option value="asc">Сначала дешевле</option>
-              <option value="desc">Сначала дороже</option>
-            </select>
-          </div>
-        </div>
 
-        {/* category tabs */}
-        <div className={`flex flex-wrap gap-2 mb-5 ${on ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "0.05s" }}>
-          {CATEGORIES.map((c) => (
-            <FilterBtn key={c.id} active={cat === c.id} onClick={() => setCat(c.id)} label={c.label} />
-          ))}
-        </div>
+        {/* Eyebrow */}
+        <p className={`text-sm text-[#999] mb-6 ${on ? "anim-up" : "hidden-init"}`}>(2) Каталог</p>
 
-        {/* filter strip */}
-        <div
-          className={`flex flex-wrap gap-x-8 gap-y-4 items-start py-5 px-6 bg-white border border-gray-100 mb-8 ${on ? "animate-fade-in-up" : "opacity-0"}`}
-          style={{ animationDelay: "0.1s" }}
-        >
-          {/* size */}
-          <div>
-            <p className="text-[10px] font-bold text-[#737373] uppercase tracking-wider mb-2">Размер</p>
-            <div className="flex flex-wrap gap-1.5">
-              {SIZE_F.map((s) => (
-                <FilterBtn key={s.id} active={sizeF === s.id} onClick={() => setSizeF(s.id)} label={s.label} />
-              ))}
-            </div>
-          </div>
-
-          {/* insulation */}
-          <div>
-            <p className="text-[10px] font-bold text-[#737373] uppercase tracking-wider mb-2">Утепление</p>
-            <div className="flex flex-wrap gap-1.5">
-              {INS_F.map((s) => (
-                <FilterBtn key={s.id} active={insF === s.id} onClick={() => setInsF(s.id)} label={s.label} />
-              ))}
-            </div>
-          </div>
-
-          {/* price */}
-          <div className="min-w-[200px]">
-            <p className="text-[10px] font-bold text-[#737373] uppercase tracking-wider mb-2">
-              До {maxP.toLocaleString("ru")} ₽
+        {/* Two-column header */}
+        <div className={`grid md:grid-cols-2 gap-6 mb-12 ${on ? "anim-up d1" : "hidden-init"}`}>
+          <h2 className="text-[clamp(26px,4vw,40px)] font-bold text-[#1a1a1a] leading-tight">
+            Строение вашей мечты<br />найдётся здесь
+          </h2>
+          <div className="flex items-center">
+            <p className="text-sm text-[#888] leading-relaxed max-w-xs">
+              <span className="text-brand-orange font-semibold">НА УЧАСТКЕ</span> — с заботой о вашем комфорте,
+              с любовью к вашим воспоминаниям
             </p>
-            <input
-              type="range" min={50000} max={500000} step={5000}
-              value={maxP} onChange={(e) => setMaxP(+e.target.value)}
-              className="w-full accent-[#CC1F1F]"
-            />
           </div>
-
-          <button
-            onClick={() => { setCat("all"); setSizeF("all"); setInsF("all"); setMaxP(500000); setSort("default"); }}
-            className="ml-auto text-xs text-[#737373] hover:text-[#CC1F1F] font-bold flex items-center gap-1 self-center transition-colors"
-          >
-            <Icon name="RotateCcw" size={12} /> Сбросить
-          </button>
         </div>
 
-        {/* products */}
-        {filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-4xl mb-3">🔍</p>
-            <p className="font-bold text-[#2D2D2D]">Ничего не найдено</p>
-            <p className="text-[#737373] text-sm mt-1">Измените фильтры</p>
+        {/* Sidebar + Grid layout */}
+        <div className={`flex gap-8 items-start ${on ? "anim-up d2" : "hidden-init"}`}>
+
+          {/* ── LEFT SIDEBAR FILTERS ── */}
+          <aside className="hidden md:flex flex-col gap-5 w-[220px] flex-shrink-0 bg-white border border-[#e8e8e8] p-5">
+
+            {/* Category */}
+            <div>
+              <p className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-2">Тип строения</p>
+              <div className="flex flex-col gap-1.5">
+                {CAT_OPTIONS.map((o) => (
+                  <label key={o.id} className="cb-label">
+                    <input type="checkbox" checked={cat.includes(o.id)} onChange={() => toggleArr(cat, o.id, setCat)} />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Size */}
+            <div>
+              <p className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-2">Площадь (м²)</p>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number" placeholder="От" value={sizeMin}
+                  onChange={(e) => setSizeMin(e.target.value)}
+                  className="w-full border border-[#ddd] text-xs px-2 py-1.5 focus:outline-none focus:border-[#1a1a1a]"
+                />
+                <span className="text-[#ccc] text-xs">—</span>
+                <input
+                  type="number" placeholder="до" value={sizeMax}
+                  onChange={(e) => setSizeMax(e.target.value)}
+                  className="w-full border border-[#ddd] text-xs px-2 py-1.5 focus:outline-none focus:border-[#1a1a1a]"
+                />
+              </div>
+            </div>
+
+            {/* Insulation */}
+            <div>
+              <p className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-2">Утепление</p>
+              <div className="flex flex-col gap-1.5">
+                {INS_OPTIONS.map((o) => (
+                  <label key={o.id} className="cb-label">
+                    <input type="checkbox" checked={insul.includes(o.id)} onChange={() => toggleArr(insul, o.id, setInsul)} />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Price */}
+            <div>
+              <p className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-2">Цена (руб.)</p>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number" placeholder="От" value={priceMin}
+                  onChange={(e) => setPriceMin(e.target.value)}
+                  className="w-full border border-[#ddd] text-xs px-2 py-1.5 focus:outline-none focus:border-[#1a1a1a]"
+                />
+                <span className="text-[#ccc] text-xs">—</span>
+                <input
+                  type="number" placeholder="до" value={priceMax}
+                  onChange={(e) => setPriceMax(e.target.value)}
+                  className="w-full border border-[#ddd] text-xs px-2 py-1.5 focus:outline-none focus:border-[#1a1a1a]"
+                />
+              </div>
+            </div>
+
+            {/* Apply */}
+            <button className="w-full bg-[#1a1a1a] text-white text-sm font-semibold py-2.5 hover:bg-[#333] transition-colors">
+              Применить
+            </button>
+            <button onClick={reset} className="text-xs text-[#999] hover:text-[#1a1a1a] transition-colors text-center">
+              Сбросить настройки
+            </button>
+          </aside>
+
+          {/* ── RIGHT — PRODUCT CARDS 2×N ── */}
+          <div className="flex-1 min-w-0">
+            {visible.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-4xl mb-3">🔍</p>
+                <p className="font-semibold text-[#1a1a1a]">Ничего не найдено</p>
+                <p className="text-[#888] text-sm mt-1">Измените параметры фильтра</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                {visible.map((p, i) => (
+                  <ProductCard key={p.id} p={p} i={i} />
+                ))}
+              </div>
+            )}
+
+            {/* Show more button — as in ref */}
+            {hasMore && (
+              <div className="mt-6">
+                <button
+                  onClick={() => setVisCount((c) => c + 4)}
+                  className="w-full border border-[#ddd] text-sm font-medium text-[#1a1a1a] py-3.5 hover:border-[#1a1a1a] transition-colors bg-white"
+                >
+                  Показать больше
+                </button>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map((p, i) => (
-              <ProductCard key={p.id} p={p} i={i} on={on} />
-            ))}
-          </div>
-        )}
+        </div>
+
       </div>
     </section>
   );
 }
 
-function ProductCard({ p, i, on }: { p: typeof PRODUCTS[0]; i: number; on: boolean }) {
-  const [liked, setLiked] = useState(false);
+// ──────────────────────────────────────────────────
+// PRODUCT CARD  — точно как на референсе
+// ──────────────────────────────────────────────────
+function ProductCard({ p, i }: { p: typeof PRODUCTS[0]; i: number }) {
   return (
     <div
-      className={`bg-white group overflow-hidden border border-gray-100 hover:border-[#CC1F1F]/30 hover:shadow-xl transition-all duration-300 ${on ? "animate-fade-in-up" : "opacity-0"}`}
-      style={{ animationDelay: `${0.12 + i * 0.04}s` }}
+      className={`bg-white border border-[#e8e8e8] overflow-hidden group card-lift anim-up hidden-init`}
+      style={{ animationDelay: `${0.04 * i}s` }}
     >
-      {/* image */}
-      <div className="relative h-44 overflow-hidden bg-gray-50">
+      {/* Photo */}
+      <div className="relative overflow-hidden" style={{ aspectRatio: "4/3" }}>
         <img
           src={p.img} alt={p.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
         />
-        {p.badge && (
-          <span className="absolute top-3 left-3 bg-[#CC1F1F] text-white text-[10px] font-black px-2 py-0.5 uppercase tracking-wider">
-            {p.badge}
-          </span>
-        )}
+        {/* Tags row at bottom of image */}
+        <div className="absolute bottom-0 inset-x-0 flex gap-1.5 p-2.5">
+          {p.tags.map((t) => (
+            <span key={t} className="bg-black/55 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5">
+              {t}
+            </span>
+          ))}
+        </div>
         {!p.inStock && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="bg-white text-[#2D2D2D] font-bold text-xs px-3 py-1">Под заказ</span>
+            <span className="bg-white text-[#1a1a1a] font-semibold text-xs px-3 py-1">Под заказ</span>
           </div>
         )}
-        <button
-          onClick={() => setLiked(!liked)}
-          className="absolute top-3 right-3 w-7 h-7 bg-white flex items-center justify-center shadow transition-transform hover:scale-110"
-        >
-          <Icon name="Heart" size={13} className={liked ? "text-[#CC1F1F]" : "text-gray-300"} />
-        </button>
       </div>
 
-      {/* body */}
+      {/* Info */}
       <div className="p-4">
-        <h3 className="font-bold text-[#2D2D2D] text-sm mb-3">{p.title}</h3>
-
-        {/* tags */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          <span className="text-[11px] font-semibold text-[#737373] bg-gray-100 px-2 py-1 flex items-center gap-1">
-            <Icon name="Move" size={10} /> {p.size}
-          </span>
-          <span className="text-[11px] font-semibold text-[#737373] bg-gray-100 px-2 py-1">
-            🏠 {p.insL}
-          </span>
-        </div>
-
+        <p className="text-xs text-[#888] mb-0.5">{CATS_MAP[p.cat]}, {p.size}</p>
+        <h3 className="font-semibold text-[#1a1a1a] text-sm mb-2 leading-snug">
+          "{p.title.split("«")[1]?.replace("»", "") || p.title}"
+        </h3>
         <div className="flex items-center justify-between">
-          <span className="font-black text-lg text-[#2D2D2D]">{p.price.toLocaleString("ru")} ₽</span>
-          <button className="bg-[#CC1F1F] hover:bg-[#a81919] text-white font-bold text-[11px] px-3.5 py-2 transition-colors">
-            Узнать цену
-          </button>
+          <span className="text-brand-orange font-bold text-base">
+            {(p.price / 1000).toFixed(0)} тыс. ₽
+          </span>
+          {p.badge && (
+            <span className="text-[10px] font-bold text-brand-orange bg-orange-50 px-2 py-0.5 border border-orange-200">
+              {p.badge}
+            </span>
+          )}
         </div>
+        <button className="mt-3 w-full text-center text-xs font-medium text-[#555] border-b border-[#ddd] pb-0.5 hover:text-[#1a1a1a] hover:border-[#1a1a1a] transition-colors text-left">
+          Подробнее
+        </button>
       </div>
     </div>
   );
 }
 
-// ─────────────────────────────────────────────
-// LEAD SECTION
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
+// LEAD SECTION  — форма заявки
+// ──────────────────────────────────────────────────
 function LeadSection() {
   const { ref, on } = useReveal();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [sent, setSent] = useState(false);
 
-  const submit = () => {
-    if (!name || !phone) return;
-    setSent(true);
-  };
-
   return (
-    <section className="py-20 bg-white" ref={ref}>
+    <section className="py-20 bg-white" ref={ref} id="lead-section">
       <div className="max-w-[1160px] mx-auto px-5">
-        <div
-          className={`grid md:grid-cols-2 overflow-hidden ${on ? "animate-scale-in" : "opacity-0"}`}
-        >
-          {/* left — image */}
-          <div className="relative h-72 md:h-auto">
-            <img
-              src={IMG_DACHA}
-              alt="Дача"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#2D2D2D]/60 to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#CC1F1F]/10" />
-            <div className="absolute bottom-6 left-6">
-              <p className="text-white font-black text-3xl leading-tight">
-                Строение<br />на участке<br />за 7 дней
-              </p>
-            </div>
+        <div className={`grid md:grid-cols-2 gap-0 overflow-hidden border border-[#e8e8e8] ${on ? "anim-up" : "hidden-init"}`}>
+          <div className="relative">
+            <img src={IMG.p5} alt="Строение" className="w-full h-full object-cover min-h-[320px]" />
           </div>
-
-          {/* right — form */}
-          <div className="bg-[#CC1F1F] p-8 md:p-12 flex flex-col justify-center">
+          <div className="bg-[#1a1a1a] p-10 md:p-12 flex flex-col justify-center">
             {sent ? (
-              <div className="text-center py-8">
-                <div className="text-5xl mb-4">✅</div>
-                <h3 className="text-white font-black text-2xl mb-2">Заявка отправлена!</h3>
-                <p className="text-white/80 text-sm">Перезвоним в течение 30 минут</p>
+              <div className="text-center">
+                <div className="text-4xl mb-4">✅</div>
+                <h3 className="text-white font-bold text-2xl mb-2">Заявка принята!</h3>
+                <p className="text-white/60 text-sm">Перезвоним в течение 30 минут</p>
               </div>
             ) : (
               <>
-                <p className="text-white/70 text-xs font-bold uppercase tracking-widest mb-3">Специальное предложение</p>
-                <h3 className="text-white font-black text-3xl md:text-4xl leading-tight mb-2">
-                  СКИДКА<br />ДО 10%
-                </h3>
-                <p className="text-white/80 text-sm mb-8 leading-relaxed">
-                  Оставь заявку — рассчитаем стоимость и подберём подходящее строение
+                <p className="text-white/50 text-xs uppercase tracking-widest mb-3">Специальное предложение</p>
+                <h3 className="text-white font-black text-3xl leading-tight mb-2">СКИДКА<br />ДО 10%</h3>
+                <p className="text-white/60 text-sm mb-8 leading-relaxed">
+                  Оставь заявку на подбор строения,<br />чтобы получить скидку
                 </p>
-
                 <div className="flex flex-col gap-3 mb-4">
                   <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Ваше имя"
-                    className="bg-white/10 border border-white/30 text-white placeholder-white/50 font-semibold text-sm px-4 py-3 focus:outline-none focus:border-white transition-colors"
+                    value={name} onChange={(e) => setName(e.target.value)}
+                    placeholder="Имя"
+                    className="bg-transparent border border-white/20 text-white placeholder-white/35 text-sm px-4 py-3 focus:outline-none focus:border-white/60 transition-colors"
                   />
                   <input
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Телефон"
-                    type="tel"
-                    className="bg-white/10 border border-white/30 text-white placeholder-white/50 font-semibold text-sm px-4 py-3 focus:outline-none focus:border-white transition-colors"
+                    value={phone} onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Почта / Телефон"
+                    className="bg-transparent border border-white/20 text-white placeholder-white/35 text-sm px-4 py-3 focus:outline-none focus:border-white/60 transition-colors"
                   />
                 </div>
-
                 <button
-                  onClick={submit}
-                  className="bg-white text-[#CC1F1F] font-black text-sm py-3.5 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                  onClick={() => { if (name && phone) setSent(true); }}
+                  className="bg-white text-[#1a1a1a] font-semibold text-sm py-3.5 hover:bg-gray-100 transition-colors"
                 >
-                  Получить скидку
-                  <Icon name="ArrowRight" size={16} />
+                  Отправить
                 </button>
-                <p className="text-white/40 text-[11px] mt-3 text-center">
-                  Нажимая, вы соглашаетесь с политикой конфиденциальности
-                </p>
               </>
             )}
           </div>
@@ -551,188 +547,150 @@ function LeadSection() {
   );
 }
 
-// ─────────────────────────────────────────────
-// TICKER
-// ─────────────────────────────────────────────
-function Ticker() {
-  const items = ["БЫТОВКИ", "БАНИ", "ХОЗБЛОКИ", "ДАЧНЫЕ ДОМИКИ", "ДОСТАВКА ПО ТАТАРСТАНУ", "ГАРАНТИЯ 12 МЕС"];
-  const doubled = [...items, ...items];
-  return (
-    <div className="bg-[#CC1F1F] py-3 overflow-hidden">
-      <div className="animate-ticker flex gap-0 whitespace-nowrap">
-        {doubled.map((item, i) => (
-          <span key={i} className="text-white font-black text-xs uppercase tracking-widest px-8 flex items-center gap-8">
-            {item}
-            <span className="inline-block w-1 h-1 bg-white/50 rounded-full" />
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
 // FOOTER
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
 function Footer({ setPage }: { setPage: (p: string) => void }) {
+  const footerLinks = [
+    { label: "КАТАЛОГ", id: "catalog" },
+    { label: "О НАС", id: "about" },
+    { label: "КАК ЗАКАЗАТЬ", id: "home" },
+    { label: "КОНТАКТЫ", id: "home" },
+  ];
+
   return (
-    <footer className="bg-[#2D2D2D] pt-14 pb-8">
-      <div className="max-w-[1160px] mx-auto px-5">
-        <div className="grid md:grid-cols-4 gap-10 mb-12">
-          <div className="md:col-span-2">
-            <img src={LOGO_URL} alt="НА УЧАСТКЕ" className="h-9 w-auto mb-4 brightness-0 invert" />
-            <p className="text-white/50 text-sm leading-relaxed max-w-xs mb-6">
-              Маркетплейс строений в Республике Татарстан. Бытовки, дачные домики, хозблоки и бани.
-            </p>
-            <a href="tel:+78432000000" className="text-white font-black text-lg hover:text-[#CC1F1F] transition-colors flex items-center gap-2">
-              <Icon name="Phone" size={18} />
-              +7 (843) 200-00-00
-            </a>
-            <p className="text-white/30 text-xs mt-1.5 ml-7">Пн–Вс, 8:00–22:00</p>
-          </div>
-
-          <div>
-            <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mb-5">Навигация</p>
-            <div className="flex flex-col gap-3">
-              {[{ id: "home", l: "Главная" }, { id: "catalog", l: "Каталог" }, { id: "about", l: "О нас" }].map((n) => (
-                <button key={n.id} onClick={() => setPage(n.id)} className="text-white/70 hover:text-white text-sm font-semibold text-left transition-colors">
-                  {n.l}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mb-5">Категории</p>
-            <div className="flex flex-col gap-3">
-              {["Бытовки", "Бани", "Дачные домики", "Хозблоки"].map((c) => (
-                <span key={c} className="text-white/70 text-sm font-semibold">{c}</span>
-              ))}
-            </div>
-          </div>
+    <footer className="bg-white border-t border-[#e8e8e8]">
+      {/* Main footer row */}
+      <div className="max-w-[1160px] mx-auto px-5 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex flex-col gap-2">
+          <img src={LOGO_URL} alt="НА УЧАСТКЕ" className="h-7 w-auto" />
+          <p className="text-xs text-[#999]">Маркетплейс строений Татарстана</p>
         </div>
 
-        {/* big brand ticker */}
-        <div className="border-t border-white/10 pt-8 overflow-hidden">
-          <div className="flex gap-0 animate-ticker whitespace-nowrap opacity-10 select-none">
-            {[...Array(6)].map((_, i) => (
-              <span key={i} className="text-white font-black text-5xl md:text-7xl uppercase tracking-tight px-6">НА УЧАСТКЕ</span>
-            ))}
-          </div>
-        </div>
+        <nav className="flex flex-wrap gap-x-8 gap-y-2">
+          {footerLinks.map((l) => (
+            <button key={l.label} onClick={() => setPage(l.id)}
+              className="text-xs font-semibold text-[#555] hover:text-[#1a1a1a] transition-colors uppercase tracking-wider">
+              {l.label}
+            </button>
+          ))}
+        </nav>
 
-        <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
-          <p className="text-white/25 text-xs">© 2024 НА УЧАСТКЕ. Все права защищены.</p>
-          <p className="text-white/25 text-xs">Республика Татарстан</p>
+        <div className="text-right">
+          <a href="tel:+78432000000" className="text-sm font-bold text-[#1a1a1a] hover:text-brand-orange transition-colors">
+            +7 (843) 200-00-00
+          </a>
+          <p className="text-xs text-[#999] mt-0.5">Пн–Вс, 8:00–22:00</p>
         </div>
+      </div>
+
+      {/* Big marquee brand row — like mizle ref */}
+      <div className="border-t border-[#f0f0f0] overflow-hidden py-2">
+        <div className="flex anim-ticker whitespace-nowrap">
+          {[...Array(8)].map((_, i) => (
+            <span key={i} className="text-[clamp(48px,8vw,96px)] font-black text-[#f0f0f0] uppercase select-none px-8 tracking-tight">
+              НА УЧАСТКЕ
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-[1160px] mx-auto px-5 py-4">
+        <p className="text-xs text-[#ccc]">© 2024 НА УЧАСТКЕ. Все права защищены. Республика Татарстан.</p>
       </div>
     </footer>
   );
 }
 
-// ─────────────────────────────────────────────
-// ABOUT PAGE
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
+// ABOUT PAGE (full page)
+// ──────────────────────────────────────────────────
 function AboutPage({ setPage }: { setPage: (p: string) => void }) {
   const { ref, on } = useReveal();
   return (
     <div className="min-h-screen bg-white">
-      {/* dark hero strip */}
-      <div className="bg-[#2D2D2D] pt-24 pb-16 px-5">
-        <div className="max-w-[1160px] mx-auto">
-          <p className="text-[#CC1F1F] text-xs font-bold uppercase tracking-widest mb-4">О компании</p>
-          <h1 className="text-5xl md:text-7xl font-black text-white leading-none">
-            НА<br />УЧАСТКЕ
+      <div className="max-w-[1160px] mx-auto px-5 pt-24 pb-16">
+        <p className="text-sm text-[#999] mb-6">(1) О компании</p>
+        <div ref={ref} className={`grid md:grid-cols-2 gap-12 mb-16 ${on ? "anim-up" : "hidden-init"}`}>
+          <h1 className="text-[clamp(28px,5vw,52px)] font-bold text-[#1a1a1a] leading-tight">
+            Почему выбирают<br />именно нас?
           </h1>
-          <p className="text-white/50 mt-4 text-lg max-w-sm">8 лет строим доверие в Татарстане</p>
-        </div>
-      </div>
-
-      <Ticker />
-
-      <div ref={ref} className="max-w-[1160px] mx-auto px-5 py-20">
-        <div className={`grid md:grid-cols-2 gap-16 items-center mb-20 ${on ? "animate-fade-in-up" : "opacity-0"}`}>
-          <div>
-            <p className="text-[#CC1F1F] text-xs font-bold uppercase tracking-widest mb-4">История</p>
-            <h2 className="text-3xl font-black text-[#2D2D2D] mb-6 leading-tight">
-              Начинали с одной бытовки,<br />стали маркетплейсом
-            </h2>
-            {[
-              "НА УЧАСТКЕ начинался в 2016 году как небольшое агентство по подбору бытовок для строительных компаний Казани.",
-              "В 2020 году запустили цифровой маркетплейс, объединив лучших производителей Татарстана в одном месте. Теперь покупатель видит реальные цены и характеристики — и делает выбор за минуты.",
-              "Сегодня мы — крупнейшая площадка строений в Республике Татарстан. Более 500 объектов продано, 40+ проверенных поставщиков.",
-            ].map((t, i) => (
-              <p key={i} className="text-[#737373] text-sm leading-relaxed mb-3">{t}</p>
-            ))}
-          </div>
-          <div className="relative">
-            <img src={IMG_DACHA} alt="О нас" className="w-full h-80 object-cover" />
-            <div className="absolute -bottom-5 -right-5 bg-[#CC1F1F] text-white p-5">
-              <div className="font-black text-4xl">8+</div>
-              <div className="text-white/80 text-xs font-bold mt-1">лет опыта</div>
-            </div>
+          <div className="flex flex-col gap-4 justify-center">
+            <p className="text-[#555] text-sm leading-relaxed">
+              Только лучшие материалы и проверенные технологии — создаём качественные
+              и надёжные объекты, которые прослужат долгие годы.
+            </p>
+            <p className="text-[#555] text-sm leading-relaxed">
+              Честность, открытость и ответственность во всём, что мы делаем.
+              8 лет на рынке Татарстана, 500+ довольных клиентов.
+            </p>
           </div>
         </div>
 
-        {/* stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-100">
-          {STATS.map((s) => (
-            <div key={s.num} className="bg-white p-8 text-center">
-              <div className="text-4xl font-black text-[#CC1F1F] mb-1">{s.num}</div>
-              <div className="text-xs font-bold text-[#2D2D2D] mb-1">{s.label}</div>
-              <div className="text-xs text-[#737373]">{s.sub}</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 border border-[#e8e8e8] mb-16">
+          {ABOUT_STATS.map((s, i) => (
+            <div key={i} className={`p-6 md:p-8 ${i < 3 ? "border-r border-[#e8e8e8]" : ""}`}>
+              <div className="text-3xl font-bold text-[#1a1a1a] mb-1">{s.num}</div>
+              <div className="text-xs text-[#888] whitespace-pre-line">{s.label}</div>
+              {s.sub && <div className="text-xs text-[#ccc] mt-0.5">{s.sub}</div>}
             </div>
           ))}
         </div>
 
-        <div className="mt-12 text-center">
+        <div className="text-center mt-8">
           <button
             onClick={() => setPage("catalog")}
-            className="bg-[#CC1F1F] hover:bg-[#a81919] text-white font-black text-sm px-10 py-4 transition-colors inline-flex items-center gap-2"
+            className="bg-[#1a1a1a] text-white font-semibold text-sm px-10 py-3.5 hover:bg-[#333] transition-colors inline-flex items-center gap-2"
           >
             Смотреть каталог <Icon name="ArrowRight" size={16} />
           </button>
         </div>
       </div>
+      <LeadSection />
       <Footer setPage={setPage} />
     </div>
   );
 }
 
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
 // HOME PAGE
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
 function HomePage({ setPage }: { setPage: (p: string) => void }) {
-  const scrollToCatalog = () => {
-    const el = document.getElementById("catalog-section");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-    else setPage("catalog");
-  };
-
   const scrollToLead = () => {
-    const el = document.getElementById("lead-section");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("lead-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div>
-      <Hero onCatalog={scrollToCatalog} onLead={scrollToLead} />
-      <Ticker />
-      <WhySection />
-      <div id="catalog-section">
-        <CatalogSection />
-      </div>
-      <div id="lead-section">
-        <LeadSection />
-      </div>
+      <Hero onLead={scrollToLead} />
+      <AboutSection />
+      <CatalogSection />
+      <LeadSection />
       <Footer setPage={setPage} />
     </div>
   );
 }
 
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
+// CATALOG PAGE (standalone)
+// ──────────────────────────────────────────────────
+function CatalogPage({ setPage }: { setPage: (p: string) => void }) {
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="max-w-[1160px] mx-auto px-5 pt-20 pb-4">
+        <h1 className="text-4xl font-bold text-[#1a1a1a] mb-1">Каталог строений</h1>
+        <p className="text-[#888] text-sm">Республика Татарстан — бытовки, домики, хозблоки, бани</p>
+      </div>
+      <CatalogSection standalone />
+      <LeadSection />
+      <Footer setPage={setPage} />
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────
 // ROOT
-// ─────────────────────────────────────────────
+// ──────────────────────────────────────────────────
 export default function Index() {
   const [page, setPage] = useState("home");
 
@@ -743,24 +701,10 @@ export default function Index() {
 
   return (
     <div className="min-h-screen">
-      <Navbar page={page} setPage={handlePage} />
-      <div className="pt-14">
+      <Navbar activePage={page} setPage={handlePage} />
+      <div className="pt-[52px]">
         {page === "home" && <HomePage setPage={handlePage} />}
-        {page === "catalog" && (
-          <div>
-            <div className="bg-[#2D2D2D] py-14 px-5">
-              <div className="max-w-[1160px] mx-auto">
-                <p className="text-[#CC1F1F] text-xs font-bold uppercase tracking-widest mb-3">Каталог</p>
-                <h1 className="text-5xl font-black text-white">Строения</h1>
-                <p className="text-white/50 mt-2">Татарстан — бытовки, домики, хозблоки, бани</p>
-              </div>
-            </div>
-            <Ticker />
-            <CatalogSection standalone />
-            <LeadSection />
-            <Footer setPage={handlePage} />
-          </div>
-        )}
+        {page === "catalog" && <CatalogPage setPage={handlePage} />}
         {page === "about" && <AboutPage setPage={handlePage} />}
       </div>
     </div>
